@@ -1,0 +1,11 @@
+{
+  "type": "code",
+  "modid": "fullstatgui",
+  "name": "FullStatGUI",
+  "authors": ["adams"],
+  "description": "Client-only: on the character (C) screen, a scrollable panel lists agreed vanilla GetBlended stats, health/hunger/body-temp and other WatchedAttribute fields, plus a full hunger sub-tree export. For debugging and modding. 1.22.0+.",
+  "version": "0.1.0",
+  "dependencies": {
+    "game": "1.22.0"
+  }
+}

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>FullStatGUI</AssemblyName>
+    <RootNamespace>FullStatGUI</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VintageStoryPath)\VintagestoryAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PublishToModFolder" AfterTargets="Build">
+    <PropertyGroup>
+      <ModDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))</ModDir>
+    </PropertyGroup>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModDir)" SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(TargetDir)$(TargetName).pdb"
+      DestinationFolder="$(ModDir)"
+      SkipUnchangedFiles="true"
+      Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+  </Target>
+
+  <Target Name="DeployToVintageStoryData" AfterTargets="PublishToModFolder" Condition="'$(OS)' == 'Windows_NT' And '$(FullStatGuNoDeploy)' != 'true'">
+    <PropertyGroup>
+      <_Mods>$(UserProfile)\AppData\Roaming\VintagestoryData\Mods\FullStatGUI</_Mods>
+    </PropertyGroup>
+    <MakeDir Directories="$(_Mods)" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)FullStatGUI.dll" DestinationFolder="$(_Mods)" SkipUnchangedFiles="true" Condition="Exists('$(MSBuildThisFileDirectory)FullStatGUI.dll')" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)modinfo.json" DestinationFolder="$(_Mods)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)FullStatGUI.pdb" DestinationFolder="$(_Mods)" SkipUnchangedFiles="true" Condition="Exists('$(MSBuildThisFileDirectory)FullStatGUI.pdb')" />
+    <Message Importance="high" Text="FullStatGUI: deployed to $(_Mods) (set FullStatGuNoDeploy=true to skip)" />
+  </Target>
+
+  <Target Name="PackageForMods" AfterTargets="PublishToModFolder">
+    <PropertyGroup>
+      <_ForMods>$(MSBuildThisFileDirectory)out\ForMods\</_ForMods>
+    </PropertyGroup>
+    <MakeDir Directories="$(_ForMods)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(_ForMods)" SkipUnchangedFiles="true" Condition="Exists('$(TargetPath)')" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)modinfo.json" DestinationFolder="$(_ForMods)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(_ForMods)" SkipUnchangedFiles="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Message Importance="high" Text="FullStatGUI: pack at $(_ForMods)" />
+  </Target>
+</Project>

@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Game folder = where VintagestoryAPI.dll lives. Override: -p:VintageStoryPath=... or VINTAGE_STORY_PATH. -->
+    <VintageStoryPath Condition="'$(VintageStoryPath)' == '' and '$(VINTAGE_STORY_PATH)' != ''">$(VINTAGE_STORY_PATH)</VintageStoryPath>
+    <VintageStoryPath Condition="'$(VintageStoryPath)' == ''">C:\Path\To\Vintagestory</VintageStoryPath>
+  </PropertyGroup>
+</Project>
